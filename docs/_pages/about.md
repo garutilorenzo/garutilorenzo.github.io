@@ -7,4 +7,4 @@ permalink: /about/
 
 ## Contact
 
-Follow me in the link below :smiley:
+- Follow me in the link below :smiley:
