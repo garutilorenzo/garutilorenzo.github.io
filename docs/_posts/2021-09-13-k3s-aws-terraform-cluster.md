@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Deploy K3s on Amazon AWS using spot instances
+description: Deploy in a few minutes an high available K3s cluster on Amazon AWS using mixed on-demand and spot instances using Terraform. Terraform is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services...
 categories: [AWS,Terraform,K3s,Kubernetes,K8s]
 ---
 
