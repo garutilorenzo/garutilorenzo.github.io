@@ -47,7 +47,7 @@ For this tutorial you need:
 
 ## Project Structure
 
-The first step is to colne this repository.
+The first step is to colne [this](https://github.com/garutilorenzo/k3s-aws-terraform-cluster) repository.
 
 ```
 git clone https://github.com/garutilorenzo/k3s-aws-terraform-cluster.git
