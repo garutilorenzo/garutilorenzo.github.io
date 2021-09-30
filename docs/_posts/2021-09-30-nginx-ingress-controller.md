@@ -7,6 +7,9 @@ categories: [Docker,Docker Swarm,Nginx,Ingress Controller]
 
 In this tutorial we are going to see how to use Nginx as an ingress controller for our Docker swarm cluster.
 
+![nginx-ingress-controller-small](https://garutilorenzo.github.io/images/nginx-ingress-controller-small.png)
+
+
 ## Prerequisites
 
 For this tutorial we only need a running Docker swarm cluster. You can setup a docker swam cluster in a [few setp](https://docs.docker.com/engine/swarm/).
