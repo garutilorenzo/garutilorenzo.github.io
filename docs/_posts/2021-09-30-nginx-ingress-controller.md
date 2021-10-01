@@ -123,7 +123,8 @@ if we check the nginx ingress controller log we can see that the nginx server ha
 docker service logs -f --tail=100 nginx-ingress_nginx
 
 nginx-ingress_nginx.1.njwey0rlfvdw@node-2    | 2021/09/30 14:05:12 [notice] 11#11: exiting
-nginx-ingress_nginx.1.njwey0rlfvdw@node-2    | 2021/09/30 14:05:12 [notice] 11#11: exitnginx-ingress_nginx.1.njwey0rlfvdw@node-2    | 2021/09/30 14:05:42 [notice] 41#41: signal process started
+nginx-ingress_nginx.1.njwey0rlfvdw@node-2    | 2021/09/30 14:05:12 [notice] 11#11: exit
+nginx-ingress_nginx.1.njwey0rlfvdw@node-2    | 2021/09/30 14:05:42 [notice] 41#41: signal process started
 ```
 
 and now we can try to reach my-service.company.tld (update your DNS or your host file and set my-service.company.tld pointing to one of your docker swarm cluster ip’s)
@@ -161,7 +162,9 @@ Locality Name (eg, city) []:
 Organization Name (eg, company) [Internet Widgits Pty Ltd]:
 Organizational Unit Name (eg, section) []:
 Common Name (e.g. server FQDN or YOUR name) []:my-service.company.tld
-Email Address []:me@company.tlddocker secret create nginx_cert certs/nginx.crt
+Email Address []:me@company.tld
+
+docker secret create nginx_cert certs/nginx.crt
 docker secret create nginx_key certs/nginx.key
 ```
 
@@ -218,7 +221,9 @@ State or Province Name (full name) [Some-State]:Italy
 Locality Name (eg, city) []:
 Organization Name (eg, company) [Internet Widgits Pty Ltd]:
 Organizational Unit Name (eg, section) []:
-Common Name (e.g. server FQDN or YOUR name) []:my-service.company.tlddocker secret create my-service.company.tld.key certs/my-service.key
+Common Name (e.g. server FQDN or YOUR name) []:my-service.company.tld
+
+docker secret create my-service.company.tld.key certs/my-service.key
 docker secret create my-service.company.tld.crt certs/my-service.crt
 ```
 
