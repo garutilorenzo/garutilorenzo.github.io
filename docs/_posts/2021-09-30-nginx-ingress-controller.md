@@ -246,7 +246,9 @@ check the nginx ingress controller logs and when the nginx daemon is restarted t
 For the SSL bridging test we need to delete only our backend service “example-https-termination”. The configuration of the nginx ingress controller for SSL bridging and SSL Termination/Offloloading are the same.
 
 ```
-docker stack rm example-https-terminationdocker stack deploy -c examples/example-service-ssl-bridging.yml example-htts-bridging
+docker stack rm example-https-termination
+
+docker stack deploy -c examples/example-service-ssl-bridging.yml example-htts-bridging
 ```
 
 check the nginx ingress controller logs and when the nginx daemon is restarted try to reach my-service.company.tld. We are now reacing my-service.company.tld in https mode the ssl certificates are served directly by our nginx ingress controller and the communication between the nginx ingress controller and our backend service “example-htts-bridging” is encrypted too.
