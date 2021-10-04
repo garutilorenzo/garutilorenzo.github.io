@@ -53,3 +53,10 @@ Ob8VZRzI9neWagqNdwvYkQsEjgfbKbYK7p2CNTUQMBwwCgYIKwYBBQUHAwEMDkRT
 VCBSb290IENBIFgz
 -----END TRUSTED CERTIFICATE-----
 ```
+
+For more information:
+
+* [OpenSSL blog post](https://www.openssl.org/blog/blog/2021/09/13/LetsEncryptRootCertExpire/)
+* [Let’s Encrypt docs](https://letsencrypt.org/docs/dst-root-ca-x3-expiration-september-2021/)
+* [Let’s Encrypt certificate compatibility](https://letsencrypt.org/docs/certificate-compatibility/)
+* [Let’s Encrypt Chain of trust](https://letsencrypt.org/certificates/)
