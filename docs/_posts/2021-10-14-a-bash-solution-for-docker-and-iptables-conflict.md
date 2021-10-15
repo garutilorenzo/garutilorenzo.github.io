@@ -279,7 +279,7 @@ The first step is to clone [this](https://github.com/garutilorenzo/iptables-dock
 
 **NOTE2** if you use a swarm cluster uncomment the lines under *Swarm mode - uncomment to enable swarm access (adjust source lan)* and adjust your LAN subnet
 
-To install iptables-docker on a local machine, clone this repository and run *sudo sh install.sh*
+To install iptables-docker on a local machine, clone [this](https://github.com/garutilorenzo/iptables-docker) repository and run *sudo sh install.sh*
 
 ```
 sudo sh install.sh 
