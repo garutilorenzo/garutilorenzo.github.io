@@ -7,7 +7,7 @@ categories: [Docker,Docker Swarm,Nginx,Ingress Controller]
 
 In this tutorial we are going to see how to use Nginx as an ingress controller for our Docker swarm cluster.
 
-![nginx-ingress-controller-small](https://garutilorenzo.github.io/images/nginx-ingress-controller-small.png)
+![nginx-ingress-controller-small]({{ site.baseurl }}/images/nginx-ingress-controller-small.png)
 
 
 ## Prerequisites
@@ -61,19 +61,19 @@ There are also some environment variales that we can specify on our nginx ingres
 
 ### SSL Passthrough (default)
 
-![ssl-passthrough](https://garutilorenzo.github.io/images/ssl-passthrough.png)
+![ssl-passthrough]({{ site.baseurl }}/images/ssl-passthrough.png)
 
 SSL passthrough passes HTTPS traffic to a backend server without decrypting the traffic on the load balancer. The data passes through fully encrypted, which precludes any layer 7 actions.
 
 ### SSL Termination/Offloloading
 
-![ssl-offloading](https://garutilorenzo.github.io/images/ssl-termination.png)
+![ssl-offloading]({{ site.baseurl }}/images/ssl-termination.png)
 
 SSL termination (a.k.a. SSL Offloading) decrypts all HTTPS traffics when it arrives at the load balancer (our docker swarm ingress controller), and the data is sent to the destination server as plain HTTP traffic (our http backend deployment)
 
 ### SSL Bridging
 
-![ssl-bridging](https://garutilorenzo.github.io/images/ssl-bridging.png)
+![ssl-bridging]({{ site.baseurl }}/images/ssl-bridging.png)
 
 Opposed to SSL termination the traffic from the load balancer and the destination is not in plain HTTP traffic but the traffic is encrypted again.
 
@@ -109,7 +109,7 @@ x47oswdzbnlp   nginx-ingress_nginx.1   garutilorenzo/docker-swarm-ingress:latest
 
 we can also check if our nginx ingress controller is working correctly using curl or a web browser.
 
-![swarm-ingress](https://garutilorenzo.github.io/images/swarm-ingress.png)
+![swarm-ingress]({{ site.baseurl }}/images/swarm-ingress.png)
 
 We are now ready to deploy our first backend service, to do this we can use an example service:
 
@@ -129,7 +129,7 @@ nginx-ingress_nginx.1.njwey0rlfvdw@node-2    | 2021/09/30 14:05:42 [notice] 41#4
 
 and now we can try to reach my-service.company.tld (update your DNS or your host file and set my-service.company.tld pointing to one of your docker swarm cluster ip’s)
 
-![swarm-http-backend](https://garutilorenzo.github.io/images/http-backend.png)
+![swarm-http-backend]({{ site.baseurl }}/images/http-backend.png)
 
 ### HTTPS, SSL passthrough mode
 
@@ -180,7 +180,7 @@ Creating service example-https_nginx
 
 check the nginx ingress controller logs and when the nginx daemon is restarted try to reach my-service.company.tld:
 
-![swarm-https-backend](https://garutilorenzo.github.io/images/https-backend.png)
+![swarm-https-backend]({{ site.baseurl }}/images/https-backend.png)
 
 we are now exposing our example-https using SSL passthrough.
 

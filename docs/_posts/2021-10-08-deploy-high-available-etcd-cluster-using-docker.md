@@ -5,7 +5,7 @@ description: A very simple way to deploy an etcd cluster using docker, docker-co
 categories: [Docker,Docker Swarm,Etcd,Nginx,Nginx Proxy]
 ---
 
-![etcd](https://garutilorenzo.github.io/images/etcd.png)
+![etcd]({{ site.baseurl }}/images/etcd.png)
 
 [etcd](https://etcd.io/) is a strongly consistent, distributed key-value store that provides a reliable way to store data that needs to be accessed by a distributed system or cluster of machines. It gracefully handles leader elections during network partitions and can tolerate machine failure, even in the leader node.
 

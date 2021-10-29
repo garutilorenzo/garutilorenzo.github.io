@@ -5,7 +5,7 @@ description: Linux and OpenSSL 1.0.2 fix Let’s Encrypt Root Certificate DST Ro
 categories: [SSL,Let’s Encrypt,OpenSSL,Linux,CA]
 ---
 
-![letsencrypt](https://garutilorenzo.github.io/images/letsencrypt.png)
+![letsencrypt]({{ site.baseurl }}/images/letsencrypt.png)
 
 If you are experiencing problems reaching https sites with let's encrypt certificate try to check your CA cert trusted bundles.
 On most linux distributions there is a package named ca-certificates, this package provide the CA cert trusted bundles.

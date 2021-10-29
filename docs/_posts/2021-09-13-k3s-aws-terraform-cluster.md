@@ -55,13 +55,13 @@ git clone https://github.com/garutilorenzo/k3s-aws-terraform-cluster.git
 
 the strucutre is the following:
 
-![k3s-repo](https://garutilorenzo.github.io/images/k3s-repo.png)
+![k3s-repo]({{ site.baseurl }}/images/k3s-repo.png)
 
 The “magic” parts of the repo are the .sh files under the files directory.
 
 This files will automatically install and configure our K3s cluster, let’s take a look at k3s-install-server.sh
 
-![k3s-server](https://garutilorenzo.github.io/images/k3s-server.png)
+![k3s-server]({{ site.baseurl }}/images/k3s-server.png)
 
 The first part of the scritp install the unzip binary and upgrade our system, then the script install the aws cli tool.
 
@@ -185,7 +185,7 @@ You can change this setting by editing the value of on_demand_percentage_above_b
 
 Here it is a diagram of our infrastructure:
 
-![k3s-infra](https://garutilorenzo.github.io/images/k3s-infra.png)
+![k3s-infra]({{ site.baseurl }}/images/k3s-infra.png)
 
 **Note:** in this diagram there are only two AZ, in our setup we will deploy our infrastructure in three AZ. The number of the AZ depends in which Zone you are deploying the stack.
 
