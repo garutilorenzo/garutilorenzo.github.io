@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mongo
+  name: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - image: mongo:latest
+        name: mongo
+        env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: "frontend"
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: "P4ssw0rd"
+          - name: MONGO_INITDB_DATABASE
+            value: "nodeapp"
+        volumeMounts:
+        - name: "mongo-data-dir"
+          mountPath: "/data/db"
+      volumes:
+      - name: "mongo-data-dir"
+        persistentVolumeClaim:
+          claimName: "mongo-data"
