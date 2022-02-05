@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mongobackup
+  name: mongobackup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongobackup
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: mongobackup
+    spec:
+      containers:
+      - image: garutilorenzo/mongo_backup:v0.1
+        imagePullPolicy: Always
+        name: mongobackup
+        env:
+          - name: MONGO_URI
+            value: "mongodb://frontend:P4ssw0rd@mongodb-svc:27017"
+          - name: BUCKET_NAME
+            value: "my-private-mongo-backup-bucket"
