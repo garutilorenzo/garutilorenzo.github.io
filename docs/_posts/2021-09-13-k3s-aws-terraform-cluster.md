@@ -95,7 +95,7 @@ if [[ "$first_instance" == "$instance_id" ]]; then
       sleep 2
     done
 else
-    echo "I'm like England :( Cluster join"
+    echo ":( Cluster join"
     until (curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --server https://${k3s_url}:6443 --node-ip $local_ip --advertise-address $local_ip --flannel-iface $flannel_iface --tls-san ${k3s_tls_san} --kubelet-arg="provider-id=aws:///$provider_id"  ); do
       echo 'k3s did not install correctly'
       sleep 2
