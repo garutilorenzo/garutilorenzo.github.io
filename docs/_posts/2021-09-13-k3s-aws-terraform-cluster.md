@@ -53,15 +53,68 @@ The first step is to colne [this](https://github.com/garutilorenzo/k3s-aws-terra
 git clone https://github.com/garutilorenzo/k3s-aws-terraform-cluster.git
 ```
 
-the strucutre is the following:
-
-![k3s-repo]({{ site.baseurl }}/images/k3s-repo.png)
+The core of this repo is the k3s_cluster directory, this directory is the terraform module that will deploy our infrastructure. The main.tf file is the entrypoint of our deployment, see [Environment setup](#environment-setup) for more info.
 
 The “magic” parts of the repo are the .sh files under the files directory.
 
 This files will automatically install and configure our K3s cluster, let’s take a look at k3s-install-server.sh
 
-![k3s-server]({{ site.baseurl }}/images/k3s-server.png)
+```bash
+#!/bin/bash
+
+apt-get update
+apt-get install -y software-properties-common unzip
+DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+rm -rf aws awscliv2.zip
+
+local_ip=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+flannel_iface=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)')
+provider_id="$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)/$(curl -s http://169.254.169.254/latest/meta-data/instance-id)"
+
+first_instance=$(aws ec2 describe-instances --filters Name=tag-value,Values=k3s-server Name=instance-state-name,Values=running --query 'sort_by(Reservations[].Instances[], &LaunchTime)[:-1].[InstanceId]' --output text | head -n1)
+instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+first_last="last"
+
+CUR_HOSTNAME=$(cat /etc/hostname)
+NEW_HOSTNAME=$instance_id
+
+hostnamectl set-hostname $NEW_HOSTNAME
+hostname $NEW_HOSTNAME
+
+sudo sed -i "s/$CUR_HOSTNAME/$NEW_HOSTNAME/g" /etc/hosts
+sudo sed -i "s/$CUR_HOSTNAME/$NEW_HOSTNAME/g" /etc/hostname
+
+if [[ "$first_instance" == "$instance_id" ]]; then
+    echo "I'm the first yeeee: Cluster init!"
+    first_last="first"
+    until (curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --cluster-init --node-ip $local_ip --advertise-address $local_ip --flannel-iface $flannel_iface --tls-san ${k3s_tls_san} --kubelet-arg="provider-id=aws:///$provider_id"); do
+      echo 'k3s did not install correctly'
+      sleep 2
+    done
+else
+    echo "I'm like England :( Cluster join"
+    until (curl -sfL https://get.k3s.io | K3S_TOKEN=${k3s_token} sh -s - --server https://${k3s_url}:6443 --node-ip $local_ip --advertise-address $local_ip --flannel-iface $flannel_iface --tls-san ${k3s_tls_san} --kubelet-arg="provider-id=aws:///$provider_id"  ); do
+      echo 'k3s did not install correctly'
+      sleep 2
+    done
+fi
+
+%{ if is_k3s_server }
+until kubectl get pods -A | grep 'Running'; do
+  echo 'Waiting for k3s startup'
+  sleep 5
+done
+
+#Install node termination handler
+if [[ "$first_last" == "first" ]]; then
+  echo 'Install node termination handler'
+  kubectl apply -f https://github.com/aws/aws-node-termination-handler/releases/download/v1.13.3/all-resources.yaml
+fi
+%{ endif }
+```
 
 The first part of the scritp install the unzip binary and upgrade our system, then the script install the aws cli tool.
 
@@ -72,6 +125,7 @@ The script then set some variables:
 * build the provider-id (needed for te cluster autoscaler tool)
 * get the first k3s-server instance launched
 * get the instance id
+* set the hostname equal to the instance id
 
 Now the magic part: the script check if this instance is the very first k3s-server instance launced. In this case the script trigger the “cluster init” since at the moment ther is no cluster.
 
@@ -84,8 +138,6 @@ The last step is to install the node termination handler since we are running on
 The k3s-install-agent.sh follow the same logic, but there is no logic for the “cluster init” since the instances are launched as agent.
 
 Both k3s-install-server.sh k3s-install-agent.sh are rendered when the launch template is created. This files are then used as “user data” on all the future EC2 instances tha twill be launched. For more details see [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html).
-
-The oter main part of the repo is the vars.tf file, details are explained above in “Environment setup”.
 
 All the other files uses the Terraform AWS api, for more details see the [documentaton](https://registry.terraform.io/providers/hashicorp/aws/latest/docs).
 
@@ -100,25 +152,39 @@ AWS_ACCESS_KEY = "xxxxxxxxxxxxxxxxx"
 AWS_SECRET_KEY = "xxxxxxxxxxxxxxxxx"
 ```
 
-on the vars.tf file change the following vars:
+edit the main.tf files and set the following variables:
 
-* AWS_REGION, set the correct aws region based on your needs
-* PATH_TO_PUBLIC_KEY and PATH_TO_PRIVATE_KEY, this variables have tou point at your ssh public key and your ssh private key
-* vpc_id, set your vpc-id. You can find your vpc_id in your AWS console (Example: vpc-xxxxx)
-* vpc_subnets, set the list of your VPC subnets. You can find the list of your vpc subnets in your AWS console (Example: subnet-xxxxxx)
-* vpc_subnet_cidr, set your vcp subnet cidr. You can find the VPC subnet CIDR in your AWS console (Example: 172.31.0.0/16)
-* my_public_ip_cidr, your public ip in cidr format (Example: 195.102.xxx.xxx/32)
+| Var   | Required | Desc |
+| ------- | ------- | ----------- |
+| `AWS_REGION`       | `yes`       | set the correct aws region based on your needs  |
+| `vpc_id` | `yes`        | set your vpc-id. You can find your vpc_id in your AWS console (Example: vpc-xxxxx) |
+| `vpc_subnets` | `yes`        | set the list of your VPC subnets. You can find the list of your vpc subnets in your AWS console (Example: subnet-xxxxxx) |
+| `vpc_subnet_cidr` | `yes`        | set your vcp subnet cidr. You can find the VPC subnet CIDR in your AWS console (Example: 172.31.0.0/16) |
+| `cluster_name` | `yes`        | the name of your K3s cluster. Default: k3s-cluster |
+| `k3s_token` | `yes`        | The token of your K3s cluster. [How to](#generate-random-token) generate a random token |
+| `my_public_ip_cidr` | `yes`        |  your public ip in cidr format (Example: 195.102.xxx.xxx/32) |
+| `environment`  | `yes`  | Current work environment (Example: staging/dev/prod). This value is used for tag all the deployed resources |
+| `default_instance_profile_name`  | `no`  | Instance profile name. Default: AWSEC2K3SInstanceProfile |
+| `default_iam_role`  | `no`  | IAM role name. Default: AWSEC2K3SRole |
+| `create_extlb`  | `no`  | Boolean value true/false, specify true for deploy an external LB pointing to k3s worker nodes. Default: false |
+| `extlb_http_port`  | `no`  | http port used by the external LB. Default: 80 |
+| `extlb_https_port`  | `no`  | https port used by the external LB. Default: 443  |
+| `PATH_TO_PUBLIC_KEY`     | `no`       | Path to your public ssh key (Default: "~/.ssh/id_rsa.pub) |
+| `PATH_TO_PRIVATE_KEY` | `no`        | Path to your private ssh key (Default: "~/.ssh/id_rsa) |
+| `default_instance_type` | `no`        | Default instance type used by the Launch template. Default: t3.large |
+| `instance_types` | `no`        | Array of instances used by the ASG. Dfault: { asg_instance_type_1 = "t3.large", asg_instance_type_3 = "m4.large", asg_instance_type_4 = "t3a.large" } |
+| `kube_api_port` | `no`        | Kube api default port Default: 6443|
+| `k3s_server_desired_capacity` | `no`        | Desired number of k3s servers. Default 3 |
+| `k3s_server_min_capacity` | `no`        | Min number of k3s servers: Default 4 |
+| `k3s_server_max_capacity` | `no`        |  Max number of k3s servers: Default 3 |
+| `k3s_worker_desired_capacity` | `no`        | Desired number of k3s workers. Default 3 |
+| `k3s_worker_min_capacity` | `no`        | Min number of k3s workers: Default 4 |
+| `k3s_worker_max_capacity` | `no`        | Max number of k3s workers: Default 3 |
 
-you can also change this optionals variables:
 
-* k3s_token, the token of your K3s cluster
-* cluster_name, the name of your K3s cluster
-* AMIS, set the id of the amis that you will use (Note this tutorial was tested using Ubuntu 20.04)
+### Instance profile
 
-You have to create manually an AWS IAM role named "AWSEC2ReadOnlyAccess".
-You can use a custom name for this role, the name then have to be set in vars.tf in instance_profile_name variable.
-
-The role is made by:
+This module will deploy a custom instance profile with the following permissions:
 
 * AmazonEC2ReadOnlyAccess - is an AWS managed policy
 * a custom inline policy for the cluster autoscaler (optional)
@@ -150,6 +216,16 @@ The inline policy is the following (Json format):
 
 For the cluster autoscaler policy you can find more details [here](https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md)
 The full documentation for the cluster autoscaler is available [here](https://github.com/kubernetes/autoscaler)
+
+The instance profile name is customizable with the variable: *default_instance_profile_name*. The default name for this instance profile is: AWSEC2K3SInstanceProfile.
+
+### Generate random token
+
+Generate random k3s tocken with:
+
+```
+cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 55 | head -n 1
+```
 
 ## Notes about K3s
 
@@ -230,15 +306,28 @@ if everything is ok the output should be something like:
       + owner_id               = (known after apply)
       + revoke_rules_on_delete = false
       + tags                   = {
-          + "Name" = "allow-strict"
+          + "Name"        = "allow-strict"
+          + "environment" = "staging"
+          + "provisioner" = "terraform"
         }
       + tags_all               = {
-          + "Name" = "allow-strict"
+          + "Name"        = "allow-strict"
+          + "environment" = "staging"
+          + "provisioner" = "terraform"
         }
       + vpc_id                 = "vpc-xxxx"
     }
 
-Plan: 10 to add, 0 to change, 0 to destroy.
+Plan: 15 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + k3s_elb_public_dns     = []
+  + k3s_servers_public_ips = [
+      + (known after apply),
+    ]
+  + k3s_workers_public_ips = [
+      + (known after apply),
+    ]
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -263,7 +352,19 @@ aws ec2 describe-instances --filters Name=tag-value,Values=k3s-server Name=insta
 On one master node the you can check the status of the cluster with:
 
 ```
-kubectl get nodes
+ssh X.X.X.X -lubuntu
+
+ubuntu@i-09a42419e18e4dd0a:~$ sudo su -
+root@i-09a42419e18e4dd0a:~# kubectl get nodes
+
+NAME                  STATUS   ROLES                       AGE   VERSION
+i-015f4e5b0c790ec07   Ready    <none>                      53s   v1.22.6+k3s1
+i-0447b6b00c6f6422e   Ready    <none>                      42s   v1.22.6+k3s1
+i-06a8449d1ea425e42   Ready    control-plane,etcd,master   96s   v1.22.6+k3s1
+i-09a42419e18e4dd0a   Ready    control-plane,etcd,master   55s   v1.22.6+k3s1
+i-0a01b7c89c958bc4b   Ready    control-plane,etcd,master   38s   v1.22.6+k3s1
+i-0c4c81a33568df947   Ready    <none>                      47s   v1.22.6+k3s1
+root@i-09a42419e18e4dd0a:~#
 ```
 
 **Note** after the instances are provisioned it may take up to five minutes to get kubectl command available.
@@ -288,24 +389,24 @@ edit the cluster-autoscaler-autodiscover.yaml and change the command of the clus
 
 ```
 command:
-            - ./cluster-autoscaler
-            - --v=4
-            - --stderrthreshold=info
-            - --cloud-provider=aws
-            - --skip-nodes-with-local-storage=false
-            - --skip-nodes-with-system-pods=false
-            - --balance-similar-node-groups
-            - --expander=random
-            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/k3s-cluster
+    - ./cluster-autoscaler
+    - --v=4
+    - --stderrthreshold=info
+    - --cloud-provider=aws
+    - --skip-nodes-with-local-storage=false
+    - --skip-nodes-with-system-pods=false
+    - --balance-similar-node-groups
+    - --expander=random
+    - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/k3s-cluster
 ```
 
 we need to edit also the ssl-certs volume. The updated volume will be:
 
 ```
 volumes:
-        - name: ssl-certs
-          hostPath:
-            path: "/etc/ssl/certs/ca-certificates.crt"
+  - name: ssl-certs
+    hostPath:
+      path: "/etc/ssl/certs/ca-certificates.crt"
 ```
 
 **Note** the certificate path may change from distro to distro so adjust the value based on your needs.
