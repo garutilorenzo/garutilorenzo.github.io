@@ -262,8 +262,8 @@ Once you have created the terraform.tfvars file edit the main.tf file (always in
 | `k3s_token` | `yes`        | The token of your K3s cluster. [How to](#generate-random-token) generate a random token |
 | `my_public_ip_cidr` | `yes`        |  your public ip in cidr format (Example: 195.102.xxx.xxx/32) |
 | `environment`  | `yes`  | Current work environment (Example: staging/dev/prod). This value is used for tag all the deployed resources |
-| `PATH_TO_PUBLIC_LB_CERT`  | `yes`  | Path to the public LB certificate. See [how to](#generate-sel-signed-ssl-certificate-for-the-public-lb-l7) the certificate |
-| `PATH_TO_PUBLIC_LB_KEY`  | `yes`  | Path to the public LB key. See [how to](#generate-sel-signed-ssl-certificate-for-the-public-lb-l7) the key |
+| `PATH_TO_PUBLIC_LB_CERT`  | `yes`  | Path to the public LB certificate. See [how to](#generate-sel-signed-ssl-certificate-for-the-public-lb-l7)  generate the certificate |
+| `PATH_TO_PUBLIC_LB_KEY`  | `yes`  | Path to the public LB key. See [how to](#generate-sel-signed-ssl-certificate-for-the-public-lb-l7) generate the key |
 | `compute_shape`  | `no`  | Compute shape to use. Default VM.Standard.A1.Flex. **NOTE** Is mandatory to use this compute shape for provision 4 always free VMs |
 | `os_image_id`  | `no`  | Image id to use. Default image: Canonical-Ubuntu-20.04-aarch64-2022.01.18-0. See [how](#how-to-list-all-the-os-images) to list all available OS images |
 | `oci_core_vcn_dns_label`  | `no`  | VCN DNS label. Default: defaultvcn |
