@@ -5,7 +5,7 @@ description: This ansible role will install and configure a high available Kuber
 categories: [Ansible Role,Ansible,Kubernetes,K8s]
 ---
 
-This ansible role will install and configure a high available Kubernetes cluster. This repo automate the installation process of Kubernetes using [kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/).
+This [ansible role](https://github.com/garutilorenzo/ansible-role-linux-kubernetes) will install and configure a high available Kubernetes cluster. This repo automate the installation process of Kubernetes using [kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/).
 
 This repo is only a example on how to use Ansible automation to install and configure a Kubernetes cluster. For a production environment use [Kubespray](https://kubernetes.io/docs/setup/production-environment/tools/kubespray/)
 
