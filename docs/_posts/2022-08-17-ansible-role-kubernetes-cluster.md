@@ -53,6 +53,10 @@ This role accept this variables:
 | `nginx_ingress_proxy_body_size`       | `no`       | `20m`       | nginx ingress controller max proxy body size  |
 | `sans_base`       | `no`       | `[list of values, see defaults/main.yml]`       | list of ip addresses or FQDN uset to sign the kube-api certificate  |
 
+## Extra Variables
+
+This role accept an extra variable *kubernetes_init_host*. This variable is used when the cluster is bootstrapped for the first time. The value of this variable must be the hostname of one of the master nodes. When ansible will run on the matched host kubernetes will be initialized.
+
 ## Cluster resource deployed
 
 Whit this role [Nginx ingress controller](#nginx-ingress-controller) and [Longhorn](#longhorn) will be installed.
@@ -82,7 +86,7 @@ In the Vagrantfile you can inject your public ssh key directly in the authorized
 
 ## Using this role
 
-To use this role you follow the example in the [examples/] dir. Adjust the hosts.ini file with your hosts and run the playbook:
+To use this role you follow the example in the [examples/](https://github.com/garutilorenzo/ansible-role-linux-kubernetes/tree/master/examples) dir. Adjust the hosts.ini file with your hosts and run the playbook:
 
 ```
 lorenzo@mint-virtual:~$ ansible-playbook -i hosts-ubuntu.ini site.yml -e kubernetes_init_host=k8s-ubuntu-0
