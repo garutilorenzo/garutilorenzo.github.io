@@ -10,7 +10,7 @@ This [ansible collection](https://github.com/garutilorenzo/ansible-collection-el
 With this collection yoi can also install and configure:
 
 * [Logstash](https://www.elastic.co/logstash/) is a free and open server-side data processing pipeline that ingests data from a multitude of sources, transforms it, and then sends it to your favorite "stash."
-* [Kibana] is a free and open user interface that lets you visualize your Elasticsearch data and navigate the Elastic Stack. Do anything from tracking query load to understanding the way requests flow through your apps
+* [Kibana](https://www.elastic.co/kibana/) is a free and open user interface that lets you visualize your Elasticsearch data and navigate the Elastic Stack. Do anything from tracking query load to understanding the way requests flow through your apps
 
 And also the Elastic Beats:
 
@@ -22,7 +22,7 @@ In most cases you may prefer [ECK](https://www.elastic.co/guide/en/cloud-on-k8s/
 
 To test this collection we use [Vagrant](https://www.vagrantup.com/) and [Virtualbox](https://www.virtualbox.org/), but if you prefer you can also use your own VMs or your baremetal machines.
 
-The first step is to download this [repo](https://github.com/garutilorenzo/ansible-collection-elk) and birng up all the VMs. But first in the Vagrantfile paste your public ssh key in the *CHANGE_ME* variable and you can also adjust the number of the vm deployed by changing the NNODES variable (in this exaple we will use 6 nodes). Now we are ready to provision the machines:
+The first step is to download this [repo](https://github.com/garutilorenzo/ansible-collection-elk) and birng up all the VMs. But first in the Vagrantfile paste your public ssh key in the *CHANGE_ME* variable. You can also adjust the number of the vm deployed by changing the NNODES variable (in this exaple we will use 6 nodes). Now we are ready to provision the machines:
 
 ```
 git clone https://github.com/garutilorenzo/ansible-collection-elk.git
@@ -79,7 +79,7 @@ Now with Ansible installed we can download the collection directly from GitHub:
 ansible-galaxy collection install git+https://github.com/garutilorenzo/ansible-collection-elk
 ```
 
-Whit Ansible and the collection installed we can setup our inventory:
+Whit Ansible and the collection installed we can setup our inventory file (hosts.ini):
 
 ```
 [elasticsearch_master]
@@ -166,7 +166,7 @@ and:
 To preserve bandwidth we download elasticsearch and kibana on our Ansible machine:
 
 ```
-mkdir -p ~/elk_tar_path # you can customize this path by changing elasticsearch_local_tar_path variable
+mkdir -p ~/elk_tar_path # <- you can customize this path by changing elasticsearch_local_tar_path variable
 curl  -o ~/elk_tar_path/kibana-8.3.3-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/kibana/kibana-8.3.3-linux-x86_64.tar.gz
 curl  -o ~/elk_tar_path/elk_tar_path/elasticsearch-8.3.3-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.3.3-linux-x86_64.tar.gz
 ```
@@ -174,7 +174,7 @@ curl  -o ~/elk_tar_path/elk_tar_path/elasticsearch-8.3.3-linux-x86_64.tar.gz htt
 and we have to create the certificate directory, where elastic certificates will be stored:
 
 ```
-mkdir -p ~/very_secure_dir # you can customize this path by changing elasticsearch_local_certs_dir variable
+mkdir -p ~/very_secure_dir # <- you can customize this path by changing elasticsearch_local_certs_dir variable
 ```
 
 The final step before proceed with the installation is to create the site.yml file:
@@ -230,7 +230,7 @@ The final step before proceed with the installation is to create the site.yml fi
         name: beats
 ```
 
-We are finally ready to install the ELK stack with ansible, since we don't have any CA certificate we pass an extra variable to our playbook:
+We are finally ready to install the ELK stack with ansible, since we don't have any CA certificate we pass an extra variable *generateca* to our playbook:
 
 ```
 export ANSIBLE_HOST_KEY_CHECKING=False # Ansible skip ssh-key validation
@@ -354,7 +354,7 @@ Now we use Kibana to analyze our Elasticsearch data:
 
 ![elk-login]({{ site.baseurl }}/images/elk-login.png)
 
-The password is the default bootstrap password *changeme*. You can customize this variable in the elasticsearch role, you have to modify the *elasticsearch_bootstrap_password* variable. **Remember** also to set the correct value for the *elasticsearch_password* variable in the beats module.
+The password is the default bootstrap password *changeme*. You can customize this variable in the elasticsearch role, you have to modify the *elasticsearch_bootstrap_password* variable. **Remember** to set in the vars.yml file the same value form *elasticsearch_password* and *elasticsearch_bootstrap_password*.
 
 This is the default Kibana dashboard:
 
@@ -378,6 +378,32 @@ In Management -> Stack Monitoring we can enable the *self monitoring* feature:
 
 ![elk-self-monitoring.png]({{ site.baseurl }}/images/elk-self-monitoring.png)
 
-Here we can inspect our cluster status:
+And now we can inspect the cluster stats:
 
 ![elk-self-status.png]({{ site.baseurl }}/images/elk-self-status.png)
+
+This is only a short introduction on the ELK Stack, you can read more on the [Elastic Docs](https://www.elastic.co/guide/index.html).
+
+When you have finished you can destroy the cluster with:
+
+```
+vagrant destroy
+    elk-ubuntu-5: Are you sure you want to destroy the 'elk-ubuntu-5' VM? [y/N] y
+==> elk-ubuntu-5: Forcing shutdown of VM...
+==> elk-ubuntu-5: Destroying VM and associated drives...
+    elk-ubuntu-4: Are you sure you want to destroy the 'elk-ubuntu-4' VM? [y/N] y
+==> elk-ubuntu-4: Forcing shutdown of VM...
+==> elk-ubuntu-4: Destroying VM and associated drives...
+    elk-ubuntu-3: Are you sure you want to destroy the 'elk-ubuntu-3' VM? [y/N] y
+==> elk-ubuntu-3: Forcing shutdown of VM...
+==> elk-ubuntu-3: Destroying VM and associated drives...
+    elk-ubuntu-2: Are you sure you want to destroy the 'elk-ubuntu-2' VM? [y/N] y
+==> elk-ubuntu-2: Forcing shutdown of VM...
+==> elk-ubuntu-2: Destroying VM and associated drives...
+    elk-ubuntu-1: Are you sure you want to destroy the 'elk-ubuntu-1' VM? [y/N] y
+==> elk-ubuntu-1: Forcing shutdown of VM...
+==> elk-ubuntu-1: Destroying VM and associated drives...
+    elk-ubuntu-0: Are you sure you want to destroy the 'elk-ubuntu-0' VM? [y/N] y
+==> elk-ubuntu-0: Forcing shutdown of VM...
+==> elk-ubuntu-0: Destroying VM and associated drives...
+```
