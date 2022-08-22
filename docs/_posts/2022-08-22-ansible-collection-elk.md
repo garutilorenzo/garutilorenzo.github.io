@@ -5,9 +5,11 @@ description: This ansible collection will install and configure a high available
 categories: [Ansible Collection,Ansible,elk,Elasticsearch,Kibana,Logstash,Beats]
 ---
 
+![elk-Logo]({{ site.baseurl }}/images/elk-logo.png)
+
 This [ansible collection](https://github.com/garutilorenzo/ansible-collection-elk) will install and configure a high available [Elasticsearch cluster](https://www.elastic.co/elasticsearch/).
 
-With this collection yoi can also install and configure:
+With this collection you can also install and configure:
 
 * [Logstash](https://www.elastic.co/logstash/) is a free and open server-side data processing pipeline that ingests data from a multitude of sources, transforms it, and then sends it to your favorite "stash."
 * [Kibana](https://www.elastic.co/kibana/) is a free and open user interface that lets you visualize your Elasticsearch data and navigate the Elastic Stack. Do anything from tracking query load to understanding the way requests flow through your apps
