@@ -5,7 +5,9 @@ description: This ansible collection will install and configure a high available
 categories: [Ansible Collection,Ansible,elk,Elasticsearch,Kibana,Logstash,Beats]
 ---
 
-![elk-Logo]({{ site.baseurl }}/images/elk-logo.png)
+<p align="center">
+  <img src="{{ site.baseurl }}/images/elk-logo.png" alt="elk-logo"/>
+</p>
 
 This [ansible collection](https://github.com/garutilorenzo/ansible-collection-elk) will install and configure a high available [Elasticsearch cluster](https://www.elastic.co/elasticsearch/).
 

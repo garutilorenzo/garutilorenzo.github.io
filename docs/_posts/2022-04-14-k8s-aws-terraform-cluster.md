@@ -5,10 +5,6 @@ description: Deploy in a few minutes an high available Kubernetes (K8s) cluster 
 categories: [AWS,Terraform,Kubernetes,K8s]
 ---
 
-<p align="center">
-  <img src="({{ site.baseurl }}/images/k8s-logo.png" alt="k8s-Logo"/>
-</p>
-
 Deploy in a few minutes an high available Kubernetes cluster on Amazon AWS using mixed on-demand and spot instances.
 
 Please **note**, this is only an example on how to Deploy a Kubernetes cluster. For a production environment you should use [EKS](https://aws.amazon.com/eks/) or [ECS](https://aws.amazon.com/it/ecs/).
