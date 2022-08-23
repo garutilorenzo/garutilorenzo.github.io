@@ -5,7 +5,9 @@ description: Deploy a high available kubernetes cluster for free on Oracle Cloud
 categories: [OCI,Terraform,K3s,Kubernetes,K8s,Oracle,Terraform,Cloud]
 ---
 
-![k3s-Logo]({{ site.baseurl }}/images/k3s-logo-large.png)
+<p align="center">
+  <img src="{{ site.baseurl }}/images/k3s-logo-large.png" alt="k3s-logo"/>
+</p>
 
 Deploy a Kubernetes cluster for free, using K3s and Oracle [always free](https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm) resources.
 
