@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Install and configure a high available Elasticsearch cluster with Ansible
-description: This ansible collection will install and configure a high available Elasticsearch cluste. In most cases you may prefer ECK or Elastic Cloud but if Kubernetes for you is like kryptonite for Superman or if you are jelous about your data or even more if you don't trust any Cloud provider this is the right place...
-categories: [Ansible Collection,Ansible,elk,Elasticsearch,Kibana,Logstash,Beats]
+title: Install and configure the ELK stack with Ansible
+description: This ansible collection will install and configure the ELK stack with Ansible. In most cases you may prefer ECK or Elastic Cloud but if Kubernetes for you is like kryptonite for Superman or if you are jelous about your data or even more if you don't trust any Cloud provider this is the right place...
+categories: [Ansible Collection,Ansible,elk,Elasticsearch,Kibana,Logstash,Elastic Beats]
 ---
 
 <p align="center">
