@@ -22,6 +22,16 @@ And also the Elastic Beats:
 
 In most cases you may prefer [ECK](https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-quickstart.html) or [Elastic Cloud](https://www.elastic.co/cloud/) but if Kubernetes for you is like kryptonite for Superman or if you are jelous about your data or even more if you don't trust any Cloud provider this is the right place.
 
+## Table of Contents
+
+* [Vagrant up, build the test infrastructure](#vagrant-up)
+* [Ansible setup and pre-flight check](#ansible-setup-and-pre-flight-check)
+* [Deploy ELK with Ansible](#deploy-elk-with-ansible)
+* [Clean up](#clean-up)
+
+
+### Vagrant up, build the test infrastructure
+
 To test this collection we use [Vagrant](https://www.vagrantup.com/) and [Virtualbox](https://www.virtualbox.org/), but if you prefer you can also use your own VMs or your baremetal machines.
 
 The first step is to download this [repo](https://github.com/garutilorenzo/ansible-collection-elk) and birng up all the VMs. But first in the Vagrantfile paste your public ssh key in the *CHANGE_ME* variable. You can also adjust the number of the vm deployed by changing the NNODES variable (in this exaple we will use 6 nodes). Now we are ready to provision the machines:
@@ -64,6 +74,8 @@ Bringing machine 'elk-ubuntu-5' up with 'virtualbox' provider...
     elk-ubuntu-5: Running: inline script
     elk-ubuntu-5: hello from node 5
 ```
+
+### Ansible setup and pre-flight check
 
 Now if you don't have Ansible installed, install ansible and all the requirements:
 
@@ -232,6 +244,8 @@ The final step before proceed with the installation is to create the site.yml fi
         name: beats
 ```
 
+### Deploy ELK with Ansible
+
 We are finally ready to install the ELK stack with ansible, since we don't have any CA certificate we pass an extra variable *generateca* to our playbook:
 
 ```
@@ -384,9 +398,11 @@ And now we can inspect the cluster stats:
 
 ![elk-self-status.png]({{ site.baseurl }}/images/elk-self-status.png)
 
-This is only a short introduction on the ELK Stack, you can read more on the [Elastic Docs](https://www.elastic.co/guide/index.html).
+This is only a short introduction on the ELK Stack, you can read more on [Elastic Docs](https://www.elastic.co/guide/index.html). To get the best form the ELK stack read also [Elastic Observability](https://www.elastic.co/observability).
 
-When you have finished you can destroy the cluster with:
+### Clean up
+
+When you have done you can finally destroy the cluster with:
 
 ```
 vagrant destroy
