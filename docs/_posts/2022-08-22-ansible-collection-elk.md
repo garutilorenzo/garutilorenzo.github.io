@@ -26,7 +26,7 @@ In most cases you may prefer [ECK](https://www.elastic.co/guide/en/cloud-on-k8s/
 
 ## Table of Contents
 
-* [Vagrant up, build the test infrastructure](#vagrant-up)
+* [Vagrant up, build the test infrastructure](#vagrant-up-build-the-test-infrastructure)
 * [Ansible setup and pre-flight check](#ansible-setup-and-pre-flight-check)
 * [Deploy ELK with Ansible](#deploy-elk-with-ansible)
 * [Clean up](#clean-up)
