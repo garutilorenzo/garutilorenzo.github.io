@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Install and configure MySQL Server and MySQL InnoDB Cluster
-description: This ansible role will install and configure MySQL Server and MySQL InnoDB Cluster with Ansible. Run MySQL in high availability mode using MySQL InnoDB Cluster or GTID replication...
+description: This ansible role will install and configure MySQL Server and MySQL InnoDB Cluster with Ansible. Run MySQL in high availability mode using MySQL InnoDB Cluster or GTID replication..
 categories: [Ansible Role,Ansible,MySQL,InnoDB Cluster,GTID,MySQL replication]
 ---
 
